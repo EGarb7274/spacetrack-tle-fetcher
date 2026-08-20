@@ -9,7 +9,7 @@ class _StubClient:
     def __init__(self, tle_by_id):
         self._tle_by_id = tle_by_id
 
-    def tle_latest(self, norad_cat_id, ordinal, format):
+    def gp(self, norad_cat_id):
         rows = []
         for norad_id in norad_cat_id:
             if norad_id in self._tle_by_id:

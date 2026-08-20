@@ -2,6 +2,9 @@ import argparse
 import logging
 import sys
 
+import httpx2
+from spacetrack import AuthenticationError
+
 from tle_fetcher import fetcher, mapping as mapping_module, satellite_list, writer
 from tle_fetcher.spacetrack_client import SpaceTrackAuthError, build_client
 
@@ -48,8 +51,19 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 1
+    except AuthenticationError as e:
+        print(f"ERROR: Space-Track authentication failed: {e}", file=sys.stderr)
+        return 1
+    except httpx2.HTTPError as e:
+        print(f"ERROR: Space-Track request failed: {e}", file=sys.stderr)
+        return 1
 
-    writer.write_output(results, args.out)
+    try:
+        writer.write_output(results, args.out)
+    except OSError as e:
+        print(f"ERROR: Failed to write output to {args.out}: {e}", file=sys.stderr)
+        return 1
+
     print(f"Wrote {len(results)} TLE(s) to {args.out}")
     return 0
 

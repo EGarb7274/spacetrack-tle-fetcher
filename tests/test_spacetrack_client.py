@@ -28,7 +28,7 @@ class _FakeClient:
         self._rows = rows
         self.calls = []
 
-    def tle_latest(self, norad_cat_id, ordinal, format):
+    def gp(self, norad_cat_id):
         self.calls.append(list(norad_cat_id))
         return self._rows
 
@@ -67,3 +67,10 @@ def test_fetch_latest_tles_empty_input_makes_no_call():
 
     assert result == {}
     assert client.calls == []
+
+
+def test_real_client_has_gp_method(monkeypatch):
+    monkeypatch.setenv("SPACETRACK_USER", "test_user")
+    monkeypatch.setenv("SPACETRACK_PASS", "test_pass")
+    client = build_client()
+    assert callable(getattr(client, "gp", None))
