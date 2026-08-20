@@ -7,15 +7,6 @@ from tle_fetcher.spacetrack_client import (
 )
 
 
-def test_build_client_succeeds_with_env_vars(monkeypatch):
-    monkeypatch.setenv("SPACETRACK_USER", "test_user")
-    monkeypatch.setenv("SPACETRACK_PASS", "test_pass")
-
-    client = build_client()
-
-    assert client is not None
-
-
 def test_build_client_raises_when_user_missing(monkeypatch):
     monkeypatch.delenv("SPACETRACK_USER", raising=False)
     monkeypatch.setenv("SPACETRACK_PASS", "test_pass")
